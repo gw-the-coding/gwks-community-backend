@@ -78,7 +78,7 @@ public class KakaoAuthService {
                     .birthyear(null)
                     .platform(Platform.KAKAO)
                     .authority(AuthorizationCode.USER)
-                    .community(CommunityCode.THREE)
+                    .community(CommunityCode.NOT_YET)
                     .state(UserState.BEFORE_SIGN)
                     .build();
             userVerify = this.usersRepository.save(newUsers);

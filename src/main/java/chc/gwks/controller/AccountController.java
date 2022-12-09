@@ -1,8 +1,10 @@
 package chc.gwks.controller;
 
+import chc.gwks.code.InternalResultCode;
 import chc.gwks.payload.request.JoinUsersRequest;
 import chc.gwks.payload.response.UserAccountInfoResponse;
 import chc.gwks.service.AccountService;
+import chc.gwks.service.ResponseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +21,17 @@ public class AccountController {
     }
 
     @GetMapping("/{userSysId}")
-    public ResponseEntity<UserAccountInfoResponse> getUserInfo(@PathVariable Long userSysId) {
+    public ResponseEntity getUserInfo(@PathVariable Long userSysId) {
         UserAccountInfoResponse userInfo = this.accountService.getUserInfo(userSysId);
         return ResponseEntity.ok()
-                .body(userInfo);
+                .body(new ResponseService(InternalResultCode.SUCCESS, userInfo));
     }
 
     @PutMapping("/{userSysId}")
     public ResponseEntity joinUsers(@PathVariable Long userSysId, JoinUsersRequest request) {
         this.accountService.joinUsers(userSysId, request);
         return ResponseEntity.ok()
-                .body(null);
+                .body(new ResponseService(InternalResultCode.SUCCESS));
     }
 
 }
