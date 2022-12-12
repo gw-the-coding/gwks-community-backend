@@ -6,15 +6,30 @@ import chc.gwks.exception.NotFoundUsersException;
 import chc.gwks.payload.request.JoinUsersRequest;
 import chc.gwks.payload.response.UserAccountInfoResponse;
 import chc.gwks.repository.UsersRepository;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+import java.security.Key;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Base64;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
 public class AccountService {
+
+    @Value("${jwt.secretKey}")
+    private String jwtSecretKey;
+
+    @Value("${jwt.encryptString}")
+    private String encryptString;
 
     private UsersRepository usersRepository;
 
@@ -38,9 +53,29 @@ public class AccountService {
                 .state(dto.getState())
                 .createdAt(dto.getCreatedAt())
                 .lastModifiedAt(dto.getLastModifiedAt())
+                .accessToken(this.generateJwtToken())
                 .build()
         ).orElseThrow(NullPointerException::new);
     }
+
+    private String generateJwtToken() {
+        long curTime = System.currentTimeMillis();
+        return Jwts.builder()
+                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+                .setIssuer("gwks")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(curTime + 86500))
+                .setSubject("GWKS-Token")
+                .signWith(SignatureAlgorithm.HS256, this.generateSignKey())
+                .compact();
+
+    }
+
+    private Key generateSignKey() {
+        return Keys.hmacShaKeyFor(this.encryptString.getBytes());
+    }
+
+
 
     public void joinUsers(Long userSysId, JoinUsersRequest request) {
         Users users = this.usersRepository

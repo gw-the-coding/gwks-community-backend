@@ -16,3 +16,6 @@ server:
   port: 8080
   servlet:
     context-path: /api/v1
+jwt:
+  secretKey: GWKS-CHAM-NEN-MA-UEM
+  encryptString: gwks-cham-nen-ma-uem-churchinyoungerpeople

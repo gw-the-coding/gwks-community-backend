@@ -31,6 +31,8 @@ public class UserAccountInfoResponse {
 
     private AuthorizationCode authority;
 
+    private String accessToken;
+
     private UserState state;
 
     private LocalDateTime createdAt;
